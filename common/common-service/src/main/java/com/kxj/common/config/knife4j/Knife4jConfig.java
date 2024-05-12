@@ -2,6 +2,7 @@ package com.kxj.common.config.knife4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -15,6 +16,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +48,8 @@ public class Knife4jConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.kxj"))
                 .paths(PathSelectors.regex("/admin/.*"))
                 .build()
-                .globalOperationParameters(pars);
+                .globalOperationParameters(pars)
+                .produces(Collections.singleton(MediaType.APPLICATION_JSON_UTF8_VALUE));
         return adminApi;
     }
 

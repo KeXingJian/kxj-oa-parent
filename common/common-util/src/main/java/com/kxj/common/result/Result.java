@@ -31,4 +31,13 @@ public class Result<T> {
         result.setMessage(resultCodeEnum.getMessage());
         return result;
     }
+
+    public Result message(String message) {
+        this.setMessage(message);
+        return this;
+    }
+    public Result code(Integer code){
+        this.setCoed(code);
+        return this;
+    }
 }
