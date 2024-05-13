@@ -22,6 +22,14 @@ public class SysUserController {
     @Resource
     private SysUserService sysUserService;
 
+    @ApiOperation("updateStatus")
+    @GetMapping("updateStatus/{id}/{status}")
+    public Result updateStatus(@PathVariable Long id,
+                               @PathVariable Integer status){
+        sysUserService.updateStatus(id,status);
+        return Result.ok();
+    }
+
     //用户条件分页查询
     @ApiOperation("用户条件分页查询")
     @GetMapping("{page}/{limit}")

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kxj.auth.service.SysRoleService;
 import com.kxj.common.result.Result;
 import com.kxj.model.system.SysRole;
+import com.kxj.vo.system.AssginRoleVo;
 import com.kxj.vo.system.SysRoleQueryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,12 +16,28 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+
 @Api(tags = "SysRole")//localhost:8800/doc.html#/home
 @RestController
 @RequestMapping("/admin/system/sysRole")
 public class SysRoleController {
     @Resource
     private SysRoleService sysRoleService;
+
+    @ApiOperation("getRoleByUser")
+    @GetMapping("toAssign/{userId}")
+    public Result toAssign(@PathVariable Long userId){
+        Map<String,Object> roleMap=sysRoleService.findRoleByAdminId(userId);
+        return Result.ok(roleMap);
+    }
+
+    @ApiOperation("doAssignRoleByUser")
+    @PutMapping("doAssign")
+    public Result doAssign(@RequestBody AssginRoleVo assginRoleVo){
+        sysRoleService.doAssign(assginRoleVo);
+        return Result.ok();
+    }
 
     //localhost:8800/admin/system/sysRole/findAll
     @ApiOperation("getAll")
