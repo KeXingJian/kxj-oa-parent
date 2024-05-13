@@ -1,23 +1,25 @@
-package com.kxj.common.exception;
+package com.kxj.common.config.exception;
 
 import com.kxj.common.result.Result;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     public Result error(Exception e){
         e.printStackTrace();
         return Result.fail();
     }
 
     @ExceptionHandler(ArithmeticException.class)
-    @ResponseBody
     public Result error(ArithmeticException arithmeticException){
         arithmeticException.printStackTrace();
         return Result.fail().message("执行了特定处理方法");
+    }
+    @ExceptionHandler(KxjException.class)
+    public Result error(KxjException exception){
+        exception.printStackTrace();
+        return Result.fail().message(exception.getMessage()).code(exception.getCode());
     }
 }
