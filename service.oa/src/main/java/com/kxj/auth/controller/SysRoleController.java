@@ -26,7 +26,6 @@ public class SysRoleController {
     @ApiOperation("getAll")
     @GetMapping("findAll")
     public Result<List<SysRole>> findAll(){
-        int i=10/0;
         List<SysRole> list = sysRoleService.list();
         return Result.ok(list);
     }
