@@ -3,6 +3,7 @@ package com.kxj.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kxj.model.system.SysMenu;
+import com.kxj.vo.system.AssginMenuVo;
 
 import java.util.List;
 
@@ -17,4 +18,8 @@ import java.util.List;
 public interface SysMenuService extends IService<SysMenu> {
 
     List<SysMenu> findNodes();
+
+    List<SysMenu> findSysMenuByRoleId(Long roleId);
+
+    void doAssign(AssginMenuVo assginMenuVo);
 }

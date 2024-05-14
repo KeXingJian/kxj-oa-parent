@@ -4,6 +4,7 @@ package com.kxj.auth.controller;
 import com.kxj.auth.service.SysMenuService;
 import com.kxj.common.result.Result;
 import com.kxj.model.system.SysMenu;
+import com.kxj.vo.system.AssginMenuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,19 @@ public class SysMenuController {
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id){
         sysMenuService.removeById(id);
+        return Result.ok();
+    }
+    @ApiOperation("getRoleByMenu")
+    @GetMapping("toAssign/{roleId}")
+    public Result toAssign(@PathVariable Long roleId){
+        List<SysMenu> list=sysMenuService.findSysMenuByRoleId(roleId);
+        return Result .ok(list);
+    }
+
+    @ApiOperation("doRoleAssign")
+    @PutMapping("doAssign")
+    public Result doAssign(@RequestBody AssginMenuVo assginMenuVo){
+        sysMenuService.doAssign(assginMenuVo);
         return Result.ok();
     }
 }

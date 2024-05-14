@@ -40,7 +40,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             }
         });
         Map<String,Object> roleMap=new HashMap<>();
-        roleMap.put("assginRoleList",assginRoelList);
+        roleMap.put("assignRoleList",assginRoelList);
         roleMap.put("allRolesList",allRoleList);
         return roleMap;
     }

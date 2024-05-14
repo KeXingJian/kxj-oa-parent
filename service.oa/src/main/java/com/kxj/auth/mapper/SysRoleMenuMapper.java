@@ -3,6 +3,8 @@ package com.kxj.auth.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kxj.model.system.SysRoleMenu;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -12,6 +14,8 @@ import com.kxj.model.system.SysRoleMenu;
  * @author kxj
  * @since 2024-05-13
  */
+@Repository
+@Mapper
 public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu> {
 
 }
