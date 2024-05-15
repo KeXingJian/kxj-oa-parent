@@ -1,6 +1,7 @@
 server:
   port: 8800
 mybatis-plus:
+  mapper-locations: classpath:com/kxj/auth/mapper/xml/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 查看日志
 spring:

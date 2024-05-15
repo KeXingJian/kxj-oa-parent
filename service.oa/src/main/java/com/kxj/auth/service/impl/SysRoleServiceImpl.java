@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kxj.auth.mapper.SysRoleMapper;
 import com.kxj.auth.mapper.SysUserRoleMapper;
+import com.kxj.auth.service.SysUserRoleService;
 import com.kxj.model.system.SysRole;
 import com.kxj.auth.service.SysRoleService;
 import com.kxj.model.system.SysUserRole;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
     @Resource
-    private SysUserRoleMapper sysUserRoleMapper;
+    private SysUserRoleService sysUserRoleService;
 
     //获取用户拥有的角色
     @Override
@@ -31,10 +32,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysRole> allRoleList = this.list();
 
         //通过目的userId,查询用户角色关联表的角色
-        List<SysUserRole> existUserRoleList = sysUserRoleMapper
-                .selectList(new LambdaQueryWrapper<SysUserRole>()
-                        .eq(SysUserRole::getUserId, userId)
-                        .select(SysUserRole::getRoleId));
+        List<SysUserRole> existUserRoleList = sysUserRoleService
+                .list(new LambdaQueryWrapper<SysUserRole>()
+                        .eq(SysUserRole::getUserId, userId));
 
         //将目的user所有角色id抽取
         List<Long> existRoleIdList = existUserRoleList.stream()
@@ -61,8 +61,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional
     public void doAssign(AssginRoleVo assginRoleVo) {
         //清除原有角色
-        sysUserRoleMapper
-                .delete(new LambdaQueryWrapper<SysUserRole>()
+        sysUserRoleService
+                .remove(new LambdaQueryWrapper<SysUserRole>()
                         .eq(SysUserRole::getUserId,
                                 assginRoleVo.getUserId()));
         //获取需要添加的角色,修改用户角色关联表
@@ -74,7 +74,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             userRole.setUserId(assginRoleVo.getUserId());
             userRole.setRoleId(roleId);
 
-            sysUserRoleMapper.insert(userRole);
+            sysUserRoleService.save(userRole);
         }
 
     }

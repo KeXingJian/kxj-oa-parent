@@ -18,11 +18,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional
     public void updateStatus(Long id, Integer status) {
         SysUser user = this.getById(id);
-        if (status ==1){
-            user.setStatus(status);
-        }else {
-            user.setStatus(0);
-        }
+
+        user.setStatus(status);
+
         this.updateById(user);
     }
 }

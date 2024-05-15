@@ -7,6 +7,7 @@ import com.kxj.auth.mapper.SysRoleMapper;
 import com.kxj.auth.mapper.SysRoleMenuMapper;
 import com.kxj.auth.service.SysMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kxj.auth.service.SysRoleMenuService;
 import com.kxj.common.config.exception.KxjException;
 import com.kxj.model.system.SysMenu;
 import com.kxj.model.system.SysRoleMenu;
@@ -36,9 +37,7 @@ import java.util.stream.Collectors;
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
     @Resource
-    private SysMenuMapper sysMenuMapper;
-    @Resource
-    private SysRoleMenuMapper sysRoleMenuMapper;
+    private SysRoleMenuService sysRoleMenuService;
 
     //构建所有菜单分支
     @Override
@@ -61,7 +60,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .eq(SysMenu::getStatus, 1));
 
         //通过目的角色id,获取角色菜单表
-        List<SysRoleMenu> sysRoleMenus = sysRoleMenuMapper.selectList(new LambdaQueryWrapper<SysRoleMenu>()
+        List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenu>()
                 .eq(SysRoleMenu::getRoleId, roleId));
 
         //抽取目的角色的菜单id
@@ -70,7 +69,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .map(SysRoleMenu::getMenuId)
                 .collect(Collectors.toList());
 
-        //与角色集对比,并设置状态
+        //与菜单集对比,并设置状态
         list1.forEach(sysMenu -> {
             sysMenu.setSelect(menuIdList.contains(sysMenu.getId()));
         });
@@ -86,7 +85,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public void doAssign(AssginMenuVo assginMenuVo) {
 
         //清空角色菜单
-        sysRoleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>()
+        sysRoleMenuService.remove(new LambdaQueryWrapper<SysRoleMenu>()
                 .eq(SysRoleMenu::getRoleId,assginMenuVo.getRoleId()));
 
         //通过需添加菜单的idList,重构菜单角色关联表
@@ -94,8 +93,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             if (StringUtils.isEmpty(menuId))continue;
             SysRoleMenu rolePermission = new SysRoleMenu();
             rolePermission.setRoleId(assginMenuVo.getRoleId());
-            rolePermission.setRoleId(menuId);
-            sysRoleMenuMapper.insert((rolePermission));
+            rolePermission.setMenuId(menuId);
+            sysRoleMenuService.save(rolePermission);
         }
     }
 
@@ -110,7 +109,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                             .orderByAsc(SysMenu::getSortValue));
         }else {
             //通过u-r表连接r-m表连接m
-            sysMenuList=sysMenuMapper.findListByUserId(userId);
+            sysMenuList=baseMapper.findListByUserId(userId);
         }
 
         //构建树
@@ -131,8 +130,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             List<SysMenu> children=menu.getChildren();
 
             if (menu.getType()==1){
-                List<SysMenu> hiddnMenuList = children.stream().filter(item ->
-                        !StringUtils.isEmpty(item)
+                List<SysMenu> hiddnMenuList = children.stream()
+                        .filter(item ->
+                        !StringUtils.isEmpty(item.getComponent())
                 ).collect(Collectors.toList());
                 hiddnMenuList.forEach(hiddenMenu->{
                     RouterVo hiddenRouter = new RouterVo();
@@ -141,6 +141,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                     hiddenRouter.setPath(getPath(hiddenMenu));
                     hiddenRouter.setComponent(hiddenMenu.getComponent());
                     hiddenRouter.setMeta(new MetaVo(hiddenMenu.getName(),hiddenMenu.getIcon()));
+                    routers.add(hiddenRouter);
                 });
             }else {
                 if (!CollectionUtils.isEmpty(children)){
@@ -170,7 +171,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             sysMenuList=this.list(new LambdaQueryWrapper<SysMenu>()
                     .eq(SysMenu::getStatus,1));
         }else {
-            sysMenuList=sysMenuMapper.findListByUserId(userId);
+            sysMenuList=baseMapper.findListByUserId(userId);
         }
 
         return sysMenuList
@@ -182,12 +183,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public boolean removeById(Serializable id) {
-        int count = this.count(new LambdaQueryWrapper<SysMenu>()
+        int count = baseMapper.selectCount(new LambdaQueryWrapper<SysMenu>()
                 .eq(SysMenu::getParentId, id));
         if (count>0){
             throw new KxjException(201,"菜单不能删除");
         }
-        sysMenuMapper.deleteById(id);
+        baseMapper.deleteById(id);
         return false;
     }
 }

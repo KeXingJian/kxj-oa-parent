@@ -33,7 +33,7 @@ public class SysRoleController {
     }
 
     @ApiOperation("通过用户分配角色")
-    @PutMapping("doAssign")
+    @PostMapping("doAssign")
     public Result doAssign(@RequestBody AssginRoleVo assginRoleVo){
         sysRoleService.doAssign(assginRoleVo);
         return Result.ok();
@@ -57,7 +57,7 @@ public class SysRoleController {
         Page<SysRole> pageParam = new Page<>(page, limit);
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         String roleName = sysRoleQueryVo.getRoleName();
-        wrapper.like(StringUtils.isEmpty(roleName),SysRole::getRoleName,roleName);
+        wrapper.like(!StringUtils.isEmpty(roleName),SysRole::getRoleName,roleName);
         Page<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
         return Result.ok(pageModel);
     }

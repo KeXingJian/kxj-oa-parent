@@ -57,7 +57,7 @@ public class IndexController {
     public Result info(HttpServletRequest request){
 
         //通过token获取角色
-        String token = request.getHeader("header");
+        String token = request.getHeader("token");
         Long userId = JwtHelper.getUserId(token);
         SysUser user = sysUserService.getById(userId);
 

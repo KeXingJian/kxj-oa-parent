@@ -42,7 +42,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("角色分配菜单")
-    @PutMapping("doAssign")
+    @PostMapping("doAssign")
     public Result doAssign(@RequestBody AssginMenuVo assginMenuVo){
         sysMenuService.doAssign(assginMenuVo);
         return Result.ok();
@@ -53,7 +53,7 @@ public class SysMenuController {
     //====================================================================
 
     @ApiOperation(("添加菜单"))
-    @PutMapping("save")
+    @PostMapping("save")
     public Result save(@RequestBody SysMenu permission){
         sysMenuService.save(permission);
         return Result.ok();

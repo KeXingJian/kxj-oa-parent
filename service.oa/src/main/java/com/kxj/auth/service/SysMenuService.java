@@ -6,6 +6,7 @@ import com.kxj.model.system.SysMenu;
 import com.kxj.vo.system.AssginMenuVo;
 import com.kxj.vo.system.RouterVo;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
