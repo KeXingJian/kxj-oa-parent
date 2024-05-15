@@ -18,35 +18,38 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "SysRole")//localhost:8800/doc.html#/home
+@Api(tags = "角色管理")
 @RestController
 @RequestMapping("/admin/system/sysRole")
 public class SysRoleController {
     @Resource
     private SysRoleService sysRoleService;
 
-    @ApiOperation("getRoleByUser")
+    @ApiOperation("通过用户获取角色")
     @GetMapping("toAssign/{userId}")
     public Result toAssign(@PathVariable Long userId){
         Map<String,Object> roleMap=sysRoleService.findRoleByAdminId(userId);
         return Result.ok(roleMap);
     }
 
-    @ApiOperation("doAssignRoleByUser")
+    @ApiOperation("通过用户分配角色")
     @PutMapping("doAssign")
     public Result doAssign(@RequestBody AssginRoleVo assginRoleVo){
         sysRoleService.doAssign(assginRoleVo);
         return Result.ok();
     }
 
-    //localhost:8800/admin/system/sysRole/findAll
-    @ApiOperation("getAll")
+    //====================================================================
+    //=============================以下为CRUD==============================
+    //====================================================================
+
+    @ApiOperation("获取全部角色")
     @GetMapping("findAll")
     public Result<List<SysRole>> findAll(){
         List<SysRole> list = sysRoleService.list();
         return Result.ok(list);
     }
-    @ApiOperation("page")
+    @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
     public Result pageQueryRole(@PathVariable Long page,
                                 @PathVariable Long limit,
@@ -58,31 +61,31 @@ public class SysRoleController {
         Page<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
         return Result.ok(pageModel);
     }
-    @ApiOperation("getRole")
-    @GetMapping("/get/{id}")
+    @ApiOperation("获取角色")
+    @GetMapping("get/{id}")
     public Result get(@PathVariable Long id){
         SysRole role = sysRoleService.getById(id);
         return Result.ok(role);
     }
-    @ApiOperation("addRole")
+    @ApiOperation("添加角色")
     @PostMapping("save")
     public Result save(@RequestBody @Validated SysRole role){
         sysRoleService.save(role);
         return Result.ok();
     }
-    @ApiOperation("updateRole")
+    @ApiOperation("更新角色")
     @PutMapping("update")
     public Result update(@RequestBody SysRole role){
         sysRoleService.updateById(role);
         return Result.ok();
     }
-    @ApiOperation("deleteRole")
+    @ApiOperation("删除角色")
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id){
         sysRoleService.removeById(id);
         return Result.ok();
     }
-    @ApiOperation("deleteRoles")
+    @ApiOperation("批量删除角色")
     @DeleteMapping("batchRemove")
     public Result batchRemove(@RequestBody List<Long> idList){
         sysRoleService.removeByIds(idList);

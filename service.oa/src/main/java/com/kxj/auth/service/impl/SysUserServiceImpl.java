@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+
+    //更新状态
     @Override
     @Transactional
     public void updateStatus(Long id, Integer status) {

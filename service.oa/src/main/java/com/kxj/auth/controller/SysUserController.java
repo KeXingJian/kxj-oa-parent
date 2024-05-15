@@ -2,6 +2,7 @@ package com.kxj.auth.controller;
 
 import com.kxj.auth.service.SysUserService;
 import com.kxj.common.result.Result;
+import com.kxj.common.utils.MD5;
 import com.kxj.model.system.SysUser;
 import com.kxj.vo.system.SysUserQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,16 +16,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-@Api(tags = "userManager")
+@Api(tags = "用户管理")
 @RestController
 @RequestMapping("/admin/system/sysUser")
 public class SysUserController {
-    //localhost:8800/admin/system/sysUser/get/13
 
     @Resource
     private SysUserService sysUserService;
 
-    @ApiOperation("updateStatus")
+    //新增抽象方法
+    @ApiOperation("更新用户状态")
     @GetMapping("updateStatus/{id}/{status}")
     public Result updateStatus(@PathVariable Long id,
                                @PathVariable Integer status){
@@ -32,15 +33,18 @@ public class SysUserController {
         return Result.ok();
     }
 
+    //====================================================================
+    //=============================以下为CRUD==============================
+    //====================================================================
+
     //用户条件分页查询
-    @ApiOperation("用户条件分页查询")
+    @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
     public Result index(@PathVariable Long page,
                         @PathVariable Long limit,
                         SysUserQueryVo sysUserQueryVo) {
         //创建page对象
         Page<SysUser> pageParam = new Page<>(page,limit);
-
         //封装条件，判断条件值不为空
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         //获取条件值
@@ -67,6 +71,8 @@ public class SysUserController {
     @ApiOperation(value = "保存用户")
     @PostMapping("save")
     public Result save(@RequestBody SysUser user) {
+        String password = user.getPassword();
+        user.setPassword(MD5.encrypt(password));
         sysUserService.save(user);
         return Result.ok();
     }

@@ -9,8 +9,9 @@ public class MenuHelper {
     public static List<SysMenu> buildTree(List<SysMenu> sysMenuList){
         List<SysMenu> trees=new ArrayList<>();
         sysMenuList.forEach(sysMenu -> {
+            //找到头节点才开始
             if (sysMenu.getParentId()==0){
-                trees.add(findChildren(sysMenu,sysMenuList));
+                trees.add(findChildren(sysMenu, sysMenuList));
             }
         });
         return trees;

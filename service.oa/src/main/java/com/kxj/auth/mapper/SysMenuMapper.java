@@ -4,7 +4,10 @@ package com.kxj.auth.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kxj.model.system.SysMenu;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,8 +17,9 @@ import org.springframework.stereotype.Repository;
  * @author kxj
  * @since 2024-05-13
  */
-@Repository
+
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
+    List<SysMenu> findListByUserId(@Param("userId") Long userId);
 }
