@@ -7,6 +7,7 @@ import com.kxj.model.system.SysMenu;
 import com.kxj.vo.system.AssginMenuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -26,7 +27,7 @@ import java.util.List;
 public class SysMenuController {
     @Resource
     private SysMenuService sysMenuService;
-
+    @PreAuthorize("hasAuthority('bnt.sysMenu.list')")
     @ApiOperation("获取菜单")
     @GetMapping("findNodes")
     public Result findNodes(){
@@ -41,6 +42,7 @@ public class SysMenuController {
         return Result .ok(list);
     }
 
+    @PreAuthorize("hasAuthority('bnt.sysRole.assignAuth')")
     @ApiOperation("角色分配菜单")
     @PostMapping("doAssign")
     public Result doAssign(@RequestBody AssginMenuVo assginMenuVo){
@@ -51,19 +53,21 @@ public class SysMenuController {
     //====================================================================
     //=============================以下为CRUD==============================
     //====================================================================
-
+    @PreAuthorize("hasAuthority('bnt.sysMenu.add')")
     @ApiOperation(("添加菜单"))
     @PostMapping("save")
     public Result save(@RequestBody SysMenu permission){
         sysMenuService.save(permission);
         return Result.ok();
     }
+    @PreAuthorize("hasAuthority('bnt.sysMenu.update')")
     @ApiOperation("更新菜单")
     @PutMapping("update")
     public Result updateById(@RequestBody SysMenu permission){
         sysMenuService.updateById(permission);
         return Result.ok();
     }
+    @PreAuthorize("hasAuthority('bnt.sysMenu.remove')")
     @ApiOperation("删除菜单")
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id){

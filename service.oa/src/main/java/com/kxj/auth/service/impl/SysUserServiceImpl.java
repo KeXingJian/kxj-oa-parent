@@ -1,5 +1,6 @@
 package com.kxj.auth.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kxj.auth.mapper.SysRoleMapper;
 import com.kxj.auth.mapper.SysUserMapper;
@@ -22,5 +23,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setStatus(status);
 
         this.updateById(user);
+    }
+
+    @Override
+    public SysUser getUserByUsername(String username) {
+
+        return this
+                .getOne(new LambdaQueryWrapper<SysUser>()
+                        .eq(SysUser::getUsername, username));
     }
 }
