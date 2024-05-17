@@ -38,7 +38,7 @@ public class ApiProcessController {
     private SysUserService sysUserService;
 
     @ApiOperation(value = "启动流程")
-    @PostMapping("/startUp")
+    @PostMapping("startUp")
     public Result startUp(@RequestBody ProcessFormVo processFormVo) {
         processService.startUp(processFormVo);
         return Result.ok();
@@ -57,7 +57,7 @@ public class ApiProcessController {
     }
 
     @ApiOperation(value = "待处理")
-    @GetMapping("/findPending/{page}/{limit}")
+    @GetMapping("findPending/{page}/{limit}")
     public Result findPending(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -82,7 +82,7 @@ public class ApiProcessController {
     }
 
     @ApiOperation(value = "已处理")
-    @GetMapping("/findProcessed/{page}/{limit}")
+    @GetMapping("findProcessed/{page}/{limit}")
     public Result findProcessed(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,
@@ -94,7 +94,7 @@ public class ApiProcessController {
     }
 
     @ApiOperation(value = "已发起")
-    @GetMapping("/findStarted/{page}/{limit}")
+    @GetMapping("findStarted/{page}/{limit}")
     public Result findStarted(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable Long page,

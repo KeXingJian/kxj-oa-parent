@@ -12,6 +12,7 @@ import com.kxj.model.process.ProcessTemplate;
 import com.kxj.model.system.SysUser;
 import com.kxj.process.mapper.ProcessMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kxj.process.service.MessageService;
 import com.kxj.process.service.ProcessRecordService;
 import com.kxj.process.service.ProcessService;
 import com.kxj.process.service.ProcessTemplateService;
@@ -75,8 +76,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     @Resource
     private ProcessRecordService processRecordService;
 
-//    @Resource
-//    private MessageService messageService;
+    @Resource
+    private MessageService messageService;
 
     @Override
     public IPage<ProcessVo> selectPage(Page<ProcessVo> pageParam, ProcessQueryVo processQueryVo) {
@@ -133,12 +134,15 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
                         businessKey,
                         variable);
         List<Task> taskList=this.getCurrentTaskList(processInstance.getId());
+        System.out.println(taskList);
+        System.out.println();
         List<String> nameList=new ArrayList<>();
         taskList.forEach(task -> {
             String assigneeName = task.getAssignee();
             SysUser taskUser = sysUserService.getUserByUsername(assigneeName);
             String name = taskUser.getName();
             nameList.add(name);
+            messageService.pushPendingMessage(process.getId(),user.getId(),task.getId());
 
         });
         process.setProcessInstanceId(processInstance.getId());

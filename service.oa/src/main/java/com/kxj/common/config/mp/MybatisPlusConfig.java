@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan(basePackages = {"com.kxj.auth.mapper","com.kxj.process.mapper"})
+@MapperScan(basePackages = {"com.kxj.auth.mapper","com.kxj.process.mapper","com.kxj.wechat.mapper"})
 public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

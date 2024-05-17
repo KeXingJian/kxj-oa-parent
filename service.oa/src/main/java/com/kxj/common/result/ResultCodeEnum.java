@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum ResultCodeEnum {
     SUCCESS(200,"success"),
     FAIL(201,"fail"),
-    LOGIN_ERROR(204,"认证失败"),
-    PERMISSION(209,"not permission");
+    LOGIN_ERROR(208,"认证失败"),
+    PERMISSION(209,"无权限");
     private final Integer code;
     private final String message;
     ResultCodeEnum(Integer code, String message) {
