@@ -8,8 +8,12 @@ import com.kxj.auth.service.SysRoleService;
 import com.kxj.auth.service.SysUserService;
 import com.kxj.model.system.SysRole;
 import com.kxj.model.system.SysUser;
+import com.kxj.security.custom.LoginUserInfoHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
@@ -31,5 +35,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return this
                 .getOne(new LambdaQueryWrapper<SysUser>()
                         .eq(SysUser::getUsername, username));
+    }
+
+    @Override
+    public Map<String, Object> getCurrentUser() {
+        SysUser sysUser = baseMapper.selectById(LoginUserInfoHelper.getUserId());
+        Map<String,Object> map=new HashMap<>();
+        map.put("name",sysUser.getName());
+        map.put("phone",sysUser.getPhone());
+        return map;
     }
 }

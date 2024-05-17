@@ -5,6 +5,7 @@ import com.kxj.common.jwt.JwtHelper;
 import com.kxj.common.result.Result;
 import com.kxj.common.result.ResultCodeEnum;
 import com.kxj.common.utils.ResponseUtil;
+import com.kxj.security.custom.LoginUserInfoHelper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -53,6 +54,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (!StringUtils.isEmpty(token)){
             String username = JwtHelper.getUsername(token);
             if (!StringUtils.isEmpty(username)){
+                LoginUserInfoHelper.setUserId(JwtHelper.getUserId(token));
+                LoginUserInfoHelper.setUsername(JwtHelper.getUsername(token));
                 String authString =(String) redisTemplate.opsForValue().get(username);
                 if (!StringUtils.isEmpty(authString)){
                     List<Map> maps = JSON.parseArray(authString, Map.class);
