@@ -71,7 +71,8 @@ public class ProcessTemplateController {
         Map<String, Object> map = new HashMap<>();
         //根据上传地址后续部署流程定义，文件名称为流程定义的默认key
         map.put("processDefinitionPath", "processes/" + filename);
-        map.put("processDefinitionKey", filename.substring(0, filename.lastIndexOf(".")));
+        map.put("processDefinitionKey", filename.substring(0,
+                filename.lastIndexOf(".")));
         return Result.ok(map);
 
     }

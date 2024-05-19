@@ -103,7 +103,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     @Override
     public void startUp(ProcessFormVo processFormVo) {
         SysUser user = sysUserService.getById(LoginUserInfoHelper.getUserId());
-        ProcessTemplate processTemplate = processTemplateService.getById(processFormVo.getProcessTemplateId());
+        ProcessTemplate processTemplate = processTemplateService
+                .getById(processFormVo.getProcessTemplateId());
 
         Process process = new Process();
         BeanUtils.copyProperties(processFormVo,process);
@@ -116,14 +117,11 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         baseMapper.insert(process);
 
         String processDefinitionKey = processTemplate.getProcessDefinitionKey();
-
         String businessKey = String.valueOf(process.getId());
 
         String fomValues =processFormVo.getFormValues();
-
         JSONObject jsonObject = JSON.parseObject(fomValues);
         JSONObject formData = jsonObject.getJSONObject("formData");
-
         Map<String, Object> map = new HashMap<>(formData);
         Map<String,Object> variable=new HashMap<>();
         variable.put("data",map);
@@ -135,7 +133,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
                         variable);
         List<Task> taskList=this.getCurrentTaskList(processInstance.getId());
         System.out.println(taskList);
-        System.out.println();
+
         List<String> nameList=new ArrayList<>();
         taskList.forEach(task -> {
             String assigneeName = task.getAssignee();
@@ -160,6 +158,7 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
 
         int begin=(int) ((pageParam.getCurrent()-1)*pageParam.getSize());
         int size =(int) pageParam.getSize();
+
         List<Task> tasks = query.listPage(begin, size);
         long count = query.count();
 
@@ -174,8 +173,9 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
             String businessKey = processInstance.getBusinessKey();
             if (businessKey==null) continue;
             long processId = Long.parseLong(businessKey);
-            baseMapper.selectById(processId);
+            Process process = baseMapper.selectById(processId);
             ProcessVo processVo = new ProcessVo();
+            BeanUtils.copyProperties(process,processVo);
             processVo.setTaskId(task.getId());
             processVoList.add(processVo);
         }
@@ -196,7 +196,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
         ProcessTemplate processTemplate = processTemplateService
                 .getById(process.getProcessTemplateId());
         boolean isApprove=false;
-        List<Task> taskList = this.getCurrentTaskList(process.getProcessInstanceId());
+        List<Task> taskList = this.getCurrentTaskList(process
+                .getProcessInstanceId());
         for(Task task : taskList) {
             //判断任务审批人是否是当前用户
             String username = LoginUserInfoHelper.getUsername();
@@ -215,24 +216,27 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
 
     @Override
     public void approve(ApprovalVo approvalVo) {
-         String taskId=approvalVo.getTaskId();
-         Map<String,Object> variables=taskService.getVariables(taskId);
-         for (Map.Entry<String,Object> entry:variables.entrySet()){
-             System.out.println(entry.getKey());
-             System.out.println(entry.getValue());
-         }
-         if (approvalVo.getStatus()==1){
-             Map<String,Object> variable=new HashMap<>();
-             taskService.complete(taskId,variable);
-         }else {
-             this.endTask(taskId);
-         }
-         String description=approvalVo.getStatus()==1 ? "已通过" : "驳回";
-         processRecordService.record(approvalVo.getProcessId(),approvalVo.getStatus(),description);
+        String taskId = approvalVo.getTaskId();
+        Map<String, Object> variables = taskService.getVariables(taskId);
+        for (Map.Entry<String, Object> entry : variables.entrySet()) {
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+        }
+        if (approvalVo.getStatus() == 1) {
+            Map<String, Object> variable = new HashMap<>();
+            taskService.complete(taskId, variable);
+        } else {
+            this.endTask(taskId);
+        }
+        String description = approvalVo.getStatus() == 1 ? "已通过" : "驳回";
+        processRecordService.record(approvalVo.getProcessId(),
+                approvalVo.getStatus(),
+                description);
 
         Process process = baseMapper.selectById(approvalVo.getProcessId());
 
-        List<Task> taskList=this.getCurrentTaskList(process.getProcessInstanceId());
+        List<Task> taskList=this.
+                getCurrentTaskList(process.getProcessInstanceId());
         if (!CollectionUtils.isEmpty(taskList)){
             List<String> assignList=new ArrayList<>();
             taskList.forEach(task -> {
@@ -290,7 +294,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     public IPage<ProcessVo> findStarted(Page<ProcessVo> pageParam) {
         ProcessQueryVo processQueryVo = new ProcessQueryVo();
         processQueryVo.setUserId(LoginUserInfoHelper.getUserId());
-        IPage<ProcessVo> pageModel = baseMapper.selectPage(pageParam, processQueryVo);
+        IPage<ProcessVo> pageModel = baseMapper.selectPage(pageParam,
+                processQueryVo);
         pageModel.getRecords().forEach(item->{
             item.setTaskId("0");
         });
@@ -298,8 +303,10 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
     }
 
     private void endTask(String taskId) {
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+        Task task = taskService.createTaskQuery()
+                .taskId(taskId).singleResult();
+        BpmnModel bpmnModel = repositoryService
+                .getBpmnModel(task.getProcessDefinitionId());
         List<Event> endEvenList = bpmnModel
                 .getMainProcess()
                 .findFlowElementsOfType(Event.class);
@@ -326,7 +333,8 @@ public class ProcessServiceImpl extends ServiceImpl<ProcessMapper, Process> impl
 
 
     private List<Task> getCurrentTaskList(String id) {
-        return taskService.createTaskQuery().processInstanceId(id).list();
+        return taskService.createTaskQuery()
+                .processInstanceId(id).list();
     }
 
 

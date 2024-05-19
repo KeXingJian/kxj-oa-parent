@@ -35,12 +35,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysUserRole> existUserRoleList = sysUserRoleService
                 .list(new LambdaQueryWrapper<SysUserRole>()
                         .eq(SysUserRole::getUserId, userId));
-
+        System.out.println(allRoleList);
         //将目的user所有角色id抽取
         List<Long> existRoleIdList = existUserRoleList.stream()
                 .map(SysUserRole::getRoleId)
                 .collect(Collectors.toList());
 
+        System.out.println(existRoleIdList);
         //与角色表对比,存在Role,则放入List
         List<SysRole> assginRoelList=new ArrayList<>();
         allRoleList.forEach(role->{
@@ -50,7 +51,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         });
 
         Map<String,Object> roleMap=new HashMap<>();
-        roleMap.put("assignRoleList",assginRoelList);
+        roleMap.put("assginRoleList",assginRoelList);
         roleMap.put("allRolesList",allRoleList);
         return roleMap;
     }

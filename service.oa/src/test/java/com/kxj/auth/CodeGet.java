@@ -9,6 +9,9 @@ import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class CodeGet {
 
     public static void main(String[] args) {
@@ -59,6 +62,7 @@ public class CodeGet {
         strategy.setControllerMappingHyphenStyle(true); //url中驼峰转连字符
 
         mpg.setStrategy(strategy);
+        Set set=new HashSet();
 
         // 6、执行
         mpg.execute();

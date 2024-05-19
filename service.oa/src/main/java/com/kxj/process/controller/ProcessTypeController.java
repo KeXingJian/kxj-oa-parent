@@ -36,6 +36,7 @@ public class ProcessTypeController {
         List<ProcessType> list = processTypeService.list();
         return Result.ok(list);
     }
+
     @PreAuthorize("hasAuthority('bnt.processType.list')")
     @ApiOperation(value = "获取分页列表")
     @GetMapping("{page}/{limit}")

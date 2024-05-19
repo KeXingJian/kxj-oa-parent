@@ -47,7 +47,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         //构建树
         List<SysMenu> result = MenuHelper.buildTree(list);
-
+        System.out.println("result: "+result);
         return result;
     }
 
@@ -58,6 +58,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         //获取有效菜单集
         List<SysMenu> list1 = this.list(new LambdaQueryWrapper<SysMenu>()
                 .eq(SysMenu::getStatus, 1));
+
+        System.out.println(list1);
 
         //通过目的角色id,获取角色菜单表
         List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenu>()
@@ -71,6 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         //与菜单集对比,并设置状态
         list1.forEach(sysMenu -> {
+//            System.out.println(menuIdList.contains(sysMenu.getId()));
             sysMenu.setSelect(menuIdList.contains(sysMenu.getId()));
         });
 

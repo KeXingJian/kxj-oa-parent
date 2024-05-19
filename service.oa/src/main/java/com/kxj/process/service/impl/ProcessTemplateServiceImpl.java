@@ -39,10 +39,8 @@ public class ProcessTemplateServiceImpl extends ServiceImpl<ProcessTemplateMappe
     public IPage<ProcessTemplate> selectPage(Page<ProcessTemplate> pageParam) {
         //1 调用mapper的方法实现分页查询
         Page<ProcessTemplate> processTemplatePage = baseMapper.selectPage(pageParam, null);
-
         //2 第一步分页查询返回分页数据，从分页数据获取列表list集合
         List<ProcessTemplate> processTemplateList = processTemplatePage.getRecords();
-
         //3 遍历list集合，得到每个对象的审批类型id
         for(ProcessTemplate processTemplate : processTemplateList) {
             //得到每个对象的审批类型id

@@ -34,6 +34,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         this.setPostOnly(false);
         //指定登录接口及提交方式，可以指定任意路径
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/admin/system/index/login","POST"));
+        System.out.println("配置了指定过滤接口");
     }
 
     @Override
@@ -45,6 +46,7 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
                     .readValue(request.getInputStream(), LoginVo.class);
             Authentication authentication=
                     new UsernamePasswordAuthenticationToken(loginVo.getUsername(),loginVo.getPassword());
+            System.out.println("进行了校验");
             return this.getAuthenticationManager().authenticate(authentication);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -65,12 +67,16 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
                         .getSysUser()
                         .getUsername());
 
+        System.out.println("name: "+customUser.getUsername()+ " Authorities: "+JSON.toJSONString(customUser.getAuthorities()));
+
         redisTemplate.opsForValue()
                 .set(customUser.getUsername(),
                         JSON.toJSONString(customUser.getAuthorities()));
 
         Map<String,Object> map=new HashMap<>();
         map.put("token",token);
+        System.out.println(map);
+
         ResponseUtil.out(response, Result.ok(map));
     }
 

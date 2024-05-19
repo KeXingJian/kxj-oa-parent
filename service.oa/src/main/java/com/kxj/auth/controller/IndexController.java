@@ -31,7 +31,7 @@ public class IndexController {
     private SysUserService sysUserService;
     @PostMapping("login")
     public Result login(@RequestBody LoginVo loginVo){
-
+        System.out.println("进入数据库校验");
         //通过用户名获取数据库角色
         SysUser sysUser = sysUserService
                 .getOne(new LambdaQueryWrapper<SysUser>()
@@ -51,6 +51,8 @@ public class IndexController {
                 .createToken(sysUser.getId(), sysUser.getUsername());
         Map<String,Object> map=new HashMap<>();
         map.put("token",token);
+
+        System.out.println(map);
         return Result.ok(map);
     }
     @GetMapping("info")
@@ -63,7 +65,7 @@ public class IndexController {
 
         //查询数据库动态构建路由结构，进行显示
         List<RouterVo> routerList=sysMenuService.findUserMenuListByUserId(userId);
-        //5 根据用户id获取用户可以操作按钮列表
+        //5 根据用户id获取用户可以操作按钮列表57
         List<String> permsList=sysMenuService.findUserPermsByUserId(userId);
 
         Map<String,Object> map=new HashMap<>();

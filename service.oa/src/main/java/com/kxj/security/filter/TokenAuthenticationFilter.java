@@ -54,9 +54,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (!StringUtils.isEmpty(token)){
             String username = JwtHelper.getUsername(token);
             if (!StringUtils.isEmpty(username)){
+
                 LoginUserInfoHelper.setUserId(JwtHelper.getUserId(token));
                 LoginUserInfoHelper.setUsername(JwtHelper.getUsername(token));
                 String authString =(String) redisTemplate.opsForValue().get(username);
+
+                //从缓存获取权限
                 if (!StringUtils.isEmpty(authString)){
                     List<Map> maps = JSON.parseArray(authString, Map.class);
                     List<SimpleGrantedAuthority> list=new ArrayList<>();
@@ -66,7 +69,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     return new UsernamePasswordAuthenticationToken(username,null, list);
                 }else {
                     return new UsernamePasswordAuthenticationToken(username,null, new ArrayList<>());
-
                 }
 
             }
